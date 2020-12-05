@@ -23,3 +23,17 @@ const port = 8000;
 app.listen(port, () => {
   console.log(`Example app listening at http://localhost:${port}`);
 });
+
+app.get("/data", function (req, res) {
+  //sends back current state of projectData
+  res.send(projectData);
+});
+
+app.post("/data", function (req, res) {
+  //takes needed values from req, and adds them to projectData
+  projectData.temperature = req.body.main.temp;
+  projectData.date = req.body.newDate;
+  projectData.userInput = req.body.userInput;
+  //sends back updated projectData
+  res.send(projectData);
+});
