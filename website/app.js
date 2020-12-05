@@ -24,7 +24,9 @@ let newDate = d.getMonth() + "." + d.getDate() + "." + d.getFullYear();
 //it takes the three params as specified in guidelines
 const apiWeatherFetch = async (baseURL, zipCode, apiKey) => {
   //fetching data
-  const response = await fetch(baseURL + zipCode + ",us&appid=" + apiKey);
+  const response = await fetch(
+    baseURL + zipCode + ",us&units=imperial&appid=" + apiKey
+  );
   try {
     const weatherData = await response.json();
     //if the weatherData is succesfully recieved/converted it will return that object
@@ -74,7 +76,7 @@ const getWeatherData = async (baseURL, apiKey) => {
         const response = await data.json();
         document.getElementById("date").innerHTML = "Date: " + response.date;
         document.getElementById("temp").innerHTML =
-          "Temp: " + response.temperature + " Kelvins";
+          "Temp: " + response.temperature + " Fahrenheit";
         document.getElementById("content").innerHTML =
           "Content: " + response.userInput;
       } catch (error) {
