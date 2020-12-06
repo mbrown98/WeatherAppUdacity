@@ -37,6 +37,7 @@ const apiWeatherFetch = async (baseURL, zipCode, apiKey) => {
 };
 
 const getWeatherData = async (baseURL, apiKey) => {
+  console.log("genrate clicekd");
   //grabbing the values of the user feelings and zip from the page
   const userInput = document.getElementById("feelings").value;
   let zipCode = document.getElementById("zip").value;
@@ -70,17 +71,30 @@ const getWeatherData = async (baseURL, apiKey) => {
         console.log("error", error);
       }
     })
-    .then(async (data) => {
-      //if successful the data object will have all the info needed to add to page
-      try {
-        const response = await data.json();
-        document.getElementById("date").innerHTML = "Date: " + response.date;
-        document.getElementById("temp").innerHTML =
-          "Temp: " + response.temperature + " Fahrenheit";
-        document.getElementById("content").innerHTML =
-          "Content: " + response.userInput;
-      } catch (error) {
-        console.log("error", error);
-      }
+    .then((data) => {
+      return getProjectData();
+    })
+    .then((data) => {
+      updateUI(data);
     });
+};
+
+const getProjectData = async () => {
+  //consume node/express server endpoint to fetch projectData
+  const response = await fetch(nodeServerLocation);
+  const projectData = await response.json();
+  //projectData will be passed on to next function in promise chain
+  return projectData;
+};
+
+const updateUI = async (data) => {
+  //updating HTML on page with fetched projectData
+  try {
+    document.getElementById("date").innerHTML = "Date: " + data.date;
+    document.getElementById("temp").innerHTML =
+      "Temp: " + data.temperature + " Fahrenheit";
+    document.getElementById("content").innerHTML = "Content: " + data.userInput;
+  } catch (error) {
+    console.log("error", error);
+  }
 };

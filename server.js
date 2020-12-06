@@ -26,6 +26,7 @@ app.listen(port, () => {
 
 app.get("/data", function (req, res) {
   //sends back current state of projectData
+
   res.send(projectData);
 });
 
