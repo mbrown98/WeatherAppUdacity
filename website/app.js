@@ -20,6 +20,28 @@ document.getElementById("generate").addEventListener("click", () => {
 let d = new Date();
 let newDate = d.getMonth() + "." + d.getDate() + "." + d.getFullYear();
 
+//function to be run on "click" of generate
+const getWeatherData = async (baseURL, apiKey) => {
+  //grabbing the value zip from the page
+  let zipCode = document.getElementById("zip").value;
+  //if zipCode has not been entered, alert the user, and use 10001 as a placeholder
+  if (!zipCode) {
+    window.alert("Please Add a Zip Code");
+    zipCode = 10001;
+  }
+  //fetch weatherData
+  apiWeatherFetch(baseURL, zipCode, apiKey)
+    .then((data) => {
+      return postData(data);
+    })
+    .then((data) => {
+      return getProjectData();
+    })
+    .then((data) => {
+      updateUI(data);
+    });
+};
+
 //this function will fetch the weather data from the api
 //it takes the three params as specified in guidelines
 const apiWeatherFetch = async (baseURL, zipCode, apiKey) => {
@@ -36,47 +58,26 @@ const apiWeatherFetch = async (baseURL, zipCode, apiKey) => {
   }
 };
 
-const getWeatherData = async (baseURL, apiKey) => {
-  console.log("genrate clicekd");
-  //grabbing the values of the user feelings and zip from the page
+const postData = async (data) => {
+  //the response object should be all the weather info from the API
+  //add the user inputs to the data object
   const userInput = document.getElementById("feelings").value;
-  let zipCode = document.getElementById("zip").value;
-  //if zipCode has not been entered, alert the user, and use 10001 as a placeholder
-  if (!zipCode) {
-    window.alert("Please Add a Zip Code");
-    zipCode = 10001;
-  }
-  if (!userInput) {
-    window.alert("Please Add Your Feelings");
-  }
-  //fetch weatherData
-  apiWeatherFetch(baseURL, zipCode, apiKey)
-    .then(async (data) => {
-      //the response object should be all the weather info from the API
-      //add the user inputs to the data object
-      data.newDate = newDate;
-      data.userInput = userInput;
-      //send a post request to the Node server
-      try {
-        const response = await fetch(nodeServerLocation, {
-          method: "POST",
-          credentials: "same-origin",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(data),
-        });
-        return response;
-      } catch (error) {
-        console.log("error", error);
-      }
-    })
-    .then((data) => {
-      return getProjectData();
-    })
-    .then((data) => {
-      updateUI(data);
+  data.newDate = newDate;
+  data.userInput = userInput;
+  //send a post request to the Node server
+  try {
+    const response = await fetch(nodeServerLocation, {
+      method: "POST",
+      credentials: "same-origin",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(data),
     });
+    return response;
+  } catch (error) {
+    console.log("error", error);
+  }
 };
 
 const getProjectData = async () => {
