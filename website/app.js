@@ -8,7 +8,7 @@
 // 3. cred: my api key for the OpenWeather API
 
 const baseURL = `http://api.openweathermap.org/data/2.5/weather?zip=`;
-const nodeServerLocation = "http://localhost:8000/data";
+const nodeServerLocation = "http://localhost:8000";
 const cred = "4ff7b7a5217aec7a84d6b9e040657f30";
 
 //adding an eventListener to the generate button so that it will run the needed function on click
@@ -66,7 +66,7 @@ const postData = async (data) => {
   data.userInput = userInput;
   //send a post request to the Node server
   try {
-    const response = await fetch(nodeServerLocation, {
+    const response = await fetch(`${nodeServerLocation}/data`, {
       method: "POST",
       credentials: "same-origin",
       headers: {
@@ -82,7 +82,7 @@ const postData = async (data) => {
 
 const getProjectData = async () => {
   //consume node/express server endpoint to fetch projectData
-  const response = await fetch(nodeServerLocation);
+  const response = await fetch(`${nodeServerLocation}/data`);
   const projectData = await response.json();
   //projectData will be passed on to next function in promise chain
   return projectData;
